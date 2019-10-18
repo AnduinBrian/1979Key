@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 
 public class SimpleIME extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
@@ -20,7 +21,7 @@ public class SimpleIME extends InputMethodService
 
     @Override
     public View onCreateInputView() {
-        kv = (KeyboardView) getLayoutInflater().inflate(R.layout.keyboard, null);
+        kv = (KeyboardView)getLayoutInflater().inflate(R.layout.keyboard, null);
         keyboard = new Keyboard(this, R.xml.qwerty);
         // keyboard_sym = new Keyboard(this, R.xml.symbol);
         kv.setKeyboard(keyboard);
