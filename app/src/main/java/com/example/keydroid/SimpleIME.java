@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputConnection;
 import android.widget.LinearLayout;
 
 public class SimpleIME extends InputMethodService
@@ -45,7 +46,7 @@ public class SimpleIME extends InputMethodService
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
         playClick(primaryCode);
-
+        InputConnection ic = getCurrentInputConnection();
         String ch = Character.toString((char) primaryCode);
         String character = primaryCode == -1 ? "caps" : ch;
         Log.e(TAG, "Clicked " + primaryCode + " " + character);
@@ -53,6 +54,7 @@ public class SimpleIME extends InputMethodService
 
         switch (primaryCode) {
             case Keyboard.KEYCODE_DELETE:
+                ic.deleteSurroundingText(1, 0);
                 break;
             case Keyboard.KEYCODE_SHIFT:
                 caps = !caps;
@@ -61,7 +63,7 @@ public class SimpleIME extends InputMethodService
                 break;
             case Keyboard.KEYCODE_DONE:
                 Log.e("SimpleKeyboard", " Hello " + KeyEvent.ACTION_DOWN + " " + KeyEvent.KEYCODE_ENTER);
-
+                ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
                 break;
             case 1000: {
 
@@ -78,6 +80,7 @@ public class SimpleIME extends InputMethodService
                 if (Character.isLetter(code) && caps) {
                     code = Character.toUpperCase(code);
                 }
+                ic.commitText(String.valueOf(code), 1);
         }
 
     }
